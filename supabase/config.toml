@@ -1,0 +1,7 @@
+project_id = "osdgfxegvauuuiezzqof"
+
+[functions.generate-notes]
+verify_jwt = true
+
+[functions.solve-doubt]
+verify_jwt = true
