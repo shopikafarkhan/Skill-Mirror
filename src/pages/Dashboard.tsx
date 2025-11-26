@@ -182,7 +182,7 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        {/* Quick Actions */}
+        {/* Quick Actions
         <Card>
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
@@ -212,7 +212,7 @@ const Dashboard = () => {
               </a>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </Layout>
   );
