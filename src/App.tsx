@@ -10,6 +10,8 @@ import Study from "./pages/Study";
 import Notes from "./pages/Notes";
 import Doubts from "./pages/Doubts";
 import Twin from "./pages/Twin";
+import "./App.css";
+
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

@@ -6,12 +6,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "13.0.5"
-  }
+export interface Database {
   public: {
     Tables: {
       doubts: {
@@ -45,7 +40,14 @@ export type Database = {
           subject?: string | null
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "doubts_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       generated_materials: {
         Row: {
@@ -75,7 +77,14 @@ export type Database = {
           title?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "generated_materials_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       marks: {
         Row: {
@@ -84,6 +93,8 @@ export type Database = {
           exam_name: string
           id: string
           marks_obtained: number
+          notes: string | null
+          percentage: number | null
           subject: string
           total_marks: number
           user_id: string
@@ -94,6 +105,8 @@ export type Database = {
           exam_name: string
           id?: string
           marks_obtained: number
+          notes?: string | null
+          percentage?: number | null
           subject: string
           total_marks: number
           user_id: string
@@ -104,35 +117,66 @@ export type Database = {
           exam_name?: string
           id?: string
           marks_obtained?: number
+          notes?: string | null
+          percentage?: number | null
           subject?: string
           total_marks?: number
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "marks_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       profiles: {
         Row: {
           avatar_url: string | null
           created_at: string | null
+          email: string | null
+          full_name: string | null
           id: string
-          total_xp: number | null
+          last_active_at: string | null
+          streak_days: number | null
+          total_study_minutes: number | null
+          updated_at: string | null
           username: string | null
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string | null
+          email?: string | null
+          full_name?: string | null
           id: string
-          total_xp?: number | null
+          last_active_at?: string | null
+          streak_days?: number | null
+          total_study_minutes?: number | null
+          updated_at?: string | null
           username?: string | null
         }
         Update: {
           avatar_url?: string | null
           created_at?: string | null
+          email?: string | null
+          full_name?: string | null
           id?: string
-          total_xp?: number | null
+          last_active_at?: string | null
+          streak_days?: number | null
+          total_study_minutes?: number | null
+          updated_at?: string | null
           username?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       study_sessions: {
         Row: {
@@ -141,6 +185,8 @@ export type Database = {
           id: string
           notes: string | null
           subject: string | null
+          target_duration: number | null
+          timer_mode: string | null
           user_id: string
           xp_earned: number
         }
@@ -150,6 +196,8 @@ export type Database = {
           id?: string
           notes?: string | null
           subject?: string | null
+          target_duration?: number | null
+          timer_mode?: string | null
           user_id: string
           xp_earned: number
         }
@@ -159,179 +207,274 @@ export type Database = {
           id?: string
           notes?: string | null
           subject?: string | null
+          target_duration?: number | null
+          timer_mode?: string | null
           user_id?: string
           xp_earned?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "study_sessions_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       study_twin: {
         Row: {
-          character_type: string | null
+          character_type: string
           created_at: string | null
-          current_xp: number | null
+          current_xp: number
           id: string
-          level: number | null
+          level: number
+          owner_user_id: string
+          total_sessions: number | null
           updated_at: string | null
-          user_id: string
-          xp_to_next_level: number | null
+          xp_to_next_level: number
         }
         Insert: {
-          character_type?: string | null
+          character_type?: string
           created_at?: string | null
-          current_xp?: number | null
+          current_xp?: number
           id?: string
-          level?: number | null
+          level?: number
+          owner_user_id: string
+          total_sessions?: number | null
           updated_at?: string | null
-          user_id: string
-          xp_to_next_level?: number | null
+          xp_to_next_level?: number
         }
         Update: {
-          character_type?: string | null
+          character_type?: string
           created_at?: string | null
-          current_xp?: number | null
+          current_xp?: number
           id?: string
-          level?: number | null
+          level?: number
+          owner_user_id?: string
+          total_sessions?: number | null
+          updated_at?: string | null
+          xp_to_next_level?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_twin_owner_user_id_fkey"
+            columns: ["owner_user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      achievements: {
+        Row: {
+          achieved_at: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          reward_xp: number | null
+          user_id: string
+        }
+        Insert: {
+          achieved_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          reward_xp?: number | null
+          user_id: string
+        }
+        Update: {
+          achieved_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          reward_xp?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "achievements_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      study_goals: {
+        Row: {
+          completed: boolean | null
+          created_at: string | null
+          deadline: string | null
+          description: string | null
+          id: string
+          target_minutes: number | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          created_at?: string | null
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          target_minutes?: number | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          created_at?: string | null
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          target_minutes?: number | null
+          title?: string
           updated_at?: string | null
           user_id?: string
-          xp_to_next_level?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "study_goals_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {
-      [_ in never]: never
+      user_weekly_stats: {
+        Row: {
+          date: string | null
+          sessions_count: number | null
+          total_minutes: number | null
+          user_id: string | null
+          week_start: string | null
+        }
+      }
+      user_leaderboard: {
+        Row: {
+          level: number | null
+          rank: number | null
+          total_xp: number | null
+          user_id: string | null
+          username: string | null
+        }
+      }
+      subject_analysis: {
+        Row: {
+          average_duration: number | null
+          sessions_count: number | null
+          subject: string | null
+          total_minutes: number | null
+          user_id: string | null
+        }
+      }
     }
     Functions: {
-      [_ in never]: never
+      calculate_streak: {
+        Args: {
+          user_uuid: string
+        }
+        Returns: number
+      }
+      get_user_stats: {
+        Args: {
+          user_uuid: string
+        }
+        Returns: {
+          total_study_minutes: number
+          total_sessions: number
+          average_session_length: number
+          favorite_subject: string
+          total_xp: number
+        }
+      }
+      level_up_study_twin: {
+        Args: {
+          twin_id: string
+          xp_to_add: number
+        }
+        Returns: {
+          new_level: number
+          new_xp: number
+          leveled_up: boolean
+        }
+      }
+      create_daily_summary: {
+        Args: {
+          user_uuid: string
+          summary_date: string
+        }
+        Returns: {
+          total_minutes: number
+          sessions_count: number
+          xp_earned: number
+        }
+      }
     }
     Enums: {
-      [_ in never]: never
+      doubt_status: "pending" | "answered" | "archived"
+      timer_mode: "stopwatch" | "countdown"
+      material_type: "flashcard" | "summary" | "quiz" | "exercise"
+      achievement_type: "level" | "streak" | "duration" | "sessions" | "subject"
+      character_type: "owl" | "fox" | "panda" | "cat" | "robot" | "wizard" | "astronaut" | "dragon"
     }
     CompositeTypes: {
-      [_ in never]: never
-    }
-  }
-}
-
-type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
-
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
-
-export type Tables<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R
-    }
-    ? R
-    : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-        Row: infer R
+      level_up_result: {
+        old_level: number
+        new_level: number
+        xp_gained: number
+        reward: string
       }
-      ? R
-      : never
-    : never
-
-export type TablesInsert<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I
-    }
-    ? I
-    : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Insert: infer I
+      session_stats: {
+        date: string
+        minutes: number
+        sessions: number
       }
-      ? I
-      : never
-    : never
-
-export type TablesUpdate<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U
     }
-    ? U
-    : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Update: infer U
-      }
-      ? U
-      : never
-    : never
-
-export type Enums<
-  DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
-    | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
-> = DefaultSchemaEnumNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
-    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
-    : never
 
-export type CompositeTypes<
-  PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
-> = PublicCompositeTypeNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
+// Type utilities
+export type Tables<T extends keyof Database["public"]["Tables"]> = Database["public"]["Tables"][T]["Row"]
+export type InsertTables<T extends keyof Database["public"]["Tables"]> = Database["public"]["Tables"][T]["Insert"]
+export type UpdateTables<T extends keyof Database["public"]["Tables"]> = Database["public"]["Tables"][T]["Update"]
+
+export type Enums<T extends keyof Database["public"]["Enums"]> = Database["public"]["Enums"][T]
+
+// Commonly used types
+export type StudyTwin = Tables<"study_twin">
+export type StudySession = Tables<"study_sessions">
+export type Profile = Tables<"profiles">
+export type Doubt = Tables<"doubts">
+export type Mark = Tables<"marks">
+export type GeneratedMaterial = Tables<"generated_materials">
+export type Achievement = Tables<"achievements">
+export type StudyGoal = Tables<"study_goals">
+
+// View types
+export type WeeklyStats = Database["public"]["Views"]["user_weekly_stats"]["Row"]
+export type LeaderboardEntry = Database["public"]["Views"]["user_leaderboard"]["Row"]
+export type SubjectAnalysis = Database["public"]["Views"]["subject_analysis"]["Row"]
+
+// Function return types
+export type UserStats = Database["public"]["Functions"]["get_user_stats"]["Returns"]
+export type LevelUpResult = Database["public"]["CompositeTypes"]["level_up_result"]
+export type SessionStats = Database["public"]["CompositeTypes"]["session_stats"]
+
+// Type guards and utilities
+export function isStudyTwin(data: any): data is StudyTwin {
+  return data && typeof data === "object" && "owner_user_id" in data && "level" in data
 }
-  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
-    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-    : never
 
-export const Constants = {
-  public: {
-    Enums: {},
-  },
-} as const
+export function isStudySession(data: any): data is StudySession {
+  return data && typeof data === "object" && "duration_minutes" in data && "xp_earned" in data
+}
+
+export function isProfile(data: any): data is Profile {
+  return data && typeof data === "object" && "id" in data
+}
